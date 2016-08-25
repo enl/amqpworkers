@@ -6,15 +6,17 @@ namespace AmqpWorkers\Definition;
 
 use AmqpWorkers\Exception\ConfigurationException;
 
-class Queue
+class Exchange
 {
     private $name;
+
+    private $type;
 
     private $passive = false;
 
     private $durable = false;
 
-    private $exclusive = false;
+    private $internal = false;
 
     private $autoDelete = false;
 
@@ -27,34 +29,52 @@ class Queue
 
     private $ticket = null;
 
+
+    public static function factory($name, $type)
+    {
+        return new static($name, $type);
+    }
+
     /**
+     * Exchange constructor.
      * @param string $name
-     * @return static
+     * @param string $type
      * @throws \AmqpWorkers\Exception\ConfigurationException
      */
-    public static function factory($name)
+    public function __construct($name, $type)
     {
-        return new static($name);
-    }
-
-    /**
-     * Queue constructor.
-     * @param string $name
-     * @throws \AmqpWorkers\Exception\ConfigurationException if empty name is given
-     */
-    public function __construct($name)
-    {
-        if ($name === null || $name === '') {
-            throw new ConfigurationException('Queue name cannot be empty.');
+        if (empty($name)) {
+            throw new ConfigurationException('Exchange name cannot be empty.');
         }
-        $this->name = (string) $name;
+        if (empty($type)) {
+            throw new ConfigurationException('Exchange type cannot be empty.');
+        }
+
+        $this->name = $name;
+        $this->type = $type;
     }
 
     /**
-     * @see https://www.rabbitmq.com/amqp-0-9-1-reference.html#queue.declare.passive
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * @return string
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
+
+    /**
+     * @see https://www.rabbitmq.com/amqp-0-9-1-reference.html#exchange.declare.passive
      * @default false
      * @param $passive
-     * @return Queue
+     * @return Exchange $this
      */
     public function passive($passive)
     {
@@ -63,10 +83,10 @@ class Queue
     }
 
     /**
-     * @see https://www.rabbitmq.com/amqp-0-9-1-reference.html#queue.declare.durable
+     * @see https://www.rabbitmq.com/amqp-0-9-1-reference.html#exchange.declare.durable
      * @default false
      * @param bool $durable
-     * @return $this
+     * @return Exchange $this
      */
     public function durable($durable)
     {
@@ -75,22 +95,10 @@ class Queue
     }
 
     /**
-     * @see https://www.rabbitmq.com/amqp-0-9-1-reference.html#queue.declare.exclusive
-     * @default false
-     * @param bool $exclusive
-     * @return $this
-     */
-    public function exclusive($exclusive)
-    {
-        $this->exclusive = $exclusive;
-        return $this;
-    }
-
-    /**
-     * @see https://www.rabbitmq.com/amqp-0-9-1-reference.html#queue.declare.auto-delete
+     * @see https://www.rabbitmq.com/amqp-0-9-1-reference.html#exchange.declare.auto-delete
      * @default false
      * @param bool $autoDelete
-     * @return $this
+     * @return Exchange $this
      */
     public function autoDelete($autoDelete)
     {
@@ -99,10 +107,22 @@ class Queue
     }
 
     /**
-     * @see https://www.rabbitmq.com/amqp-0-9-1-reference.html#queue.declare.no-wait
+     * @see * @see https://www.rabbitmq.com/amqp-0-9-1-reference.html#exchange.declare.internal
+     * @default false
+     * @param $internal
+     * @return Exchange $this
+     */
+    public function internal($internal)
+    {
+        $this->internal = $internal;
+        return $this;
+    }
+
+    /**
+     * @see https://www.rabbitmq.com/amqp-0-9-1-reference.html#exchange.declare.no-wait
      * @default false
      * @param bool $nowait
-     * @return $this
+     * @return Exchange $this
      */
     public function nowait($nowait)
     {
@@ -134,15 +154,6 @@ class Queue
     }
 
     /**
-     * This field is necessary without all others so that we have dedicated getter for it.
-     * @return string
-     */
-    public function getName()
-    {
-        return $this->name;
-    }
-
-    /**
      * Returns the list of parameters for queue_declare
      */
     public function listParams()
@@ -150,8 +161,8 @@ class Queue
         return [
             $this->passive,
             $this->durable,
-            $this->exclusive,
             $this->autoDelete,
+            $this->internal,
             $this->nowait,
             $this->arguments,
             $this->ticket

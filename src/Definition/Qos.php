@@ -76,7 +76,7 @@ class Qos
     /**
      * Returns all parameters in same order as they are used in PhpAmqpLib\Channel\AMQPChannel::basic_qos()
      *
-     * @see PhpAmqpLib\Channel\AMQPChannel::basic_qos()
+     * @see \PhpAmqpLib\Channel\AMQPChannel::basic_qos()
      * @return array
      */
     public function values()

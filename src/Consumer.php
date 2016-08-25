@@ -5,7 +5,9 @@ namespace AmqpWorkers;
 
 
 use AmqpWorkers\Definition\Qos;
+use AmqpWorkers\Definition\Queue;
 use AmqpWorkers\Exception\ConsumerNotProperlyConfigured;
+use AmqpWorkers\Worker\WorkerInterface;
 use PhpAmqpLib\Connection\AbstractConnection;
 use PhpAmqpLib\Message\AMQPMessage;
 
@@ -22,12 +24,12 @@ class Consumer
     private $qos;
 
     /**
-     * @var string
+     * @var Queue
      */
-    private $queueName;
+    private $queue;
 
     /**
-     * @var callable
+     * @var WorkerInterface
      */
     private $worker;
 
@@ -61,42 +63,61 @@ class Consumer
         $this->connection = $connection;
     }
 
+    /**
+     * @param Qos $qos
+     * @return Consumer $this
+     */
     public function withQos(Qos $qos)
     {
         $this->qos = $qos;
+        return $this;
     }
 
     /**
-     * @param string $queueName
-     * @param callable $worker
+     * @param Queue $queue
+     * @return Consumer $this
+     */
+    public function withQueue(Queue $queue)
+    {
+        $this->queue = $queue;
+        return $this;
+    }
+
+    /**
+     * @param WorkerInterface $worker
+     * @return Consumer $this
      * @throws \AmqpWorkers\Exception\ConsumerNotProperlyConfigured
      */
-    public function listen($queueName, $worker)
+    public function withListener(WorkerInterface $worker)
     {
-        if (!is_callable($this->worker)) {
-            throw new ConsumerNotProperlyConfigured('Worker must be callable.');
-        }
-
-        $this->queueName = $queueName;
         $this->worker = $worker;
+
+        return $this;
     }
 
     /**
      * If producer is set, Consumer will call `Producer::produce` with whatever Worker will return
      *
      * @param Producer $producer
+     * @return Consumer $this
      */
     public function produceResult(Producer $producer)
     {
         $this->producer = $producer;
+        return $this;
     }
 
+    /**
+     * Starts consumer. By default, this function can be terminated only by Worker's exception
+     *
+     * @throws ConsumerNotProperlyConfigured
+     */
     public function run()
     {
-        if ($this->queueName === null) {
-            throw new ConsumerNotProperlyConfigured('Queue name is not given.');
+        if ($this->queue === null) {
+            throw new ConsumerNotProperlyConfigured('Queue is not given.');
         }
-        if ($this->worker = null) {
+        if ($this->worker === null) {
             throw new ConsumerNotProperlyConfigured('Worker is not defined.');
         }
 
@@ -108,7 +129,7 @@ class Consumer
         }
 
         $wrapper = function(AMQPMessage $message) {
-            $result = call_user_func($this->worker, $message->getBody());
+            $result = $this->worker->invoke($message->getBody());
             $message->delivery_info['channel']->basic_ack($message->delivery_info['delivery_tag']);
 
             if ($this->producer) {
@@ -117,7 +138,9 @@ class Consumer
         };
 
         // declare queue here
-        $channel->basic_consume($this->queueName, '', false, false, false, false, $wrapper, null, []);
+        list ($passive, $durable, $exclusive, $autoDelete, $nowait, $arguments, $ticket) = $this->queue->listParams();
+        $channel->queue_declare($this->queue->getName(), $passive, $durable, $exclusive, $autoDelete, $nowait, $arguments, $ticket);
+        $channel->basic_consume($this->queue->getName(), '', false, false, false, false, $wrapper, null, []);
 
         while(count($channel->callbacks)) {
             $channel->wait();

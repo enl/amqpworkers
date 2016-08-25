@@ -3,6 +3,8 @@
 
 namespace AmqpWorkers;
 
+use AmqpWorkers\Definition\Exchange;
+use AmqpWorkers\Definition\Queue;
 use AmqpWorkers\Exception\ProducerNotProperlyConfigured;
 use PhpAmqpLib\Channel\AMQPChannel;
 use PhpAmqpLib\Connection\AbstractConnection;
@@ -14,6 +16,21 @@ class Producer
      * @var callable
      */
     private $formatter;
+
+    /**
+     * @var bool
+     */
+    private $isExchange;
+
+    /**
+     * @var Queue
+     */
+    private $queue;
+
+    /**
+     * @var Exchange
+     */
+    private $exchange;
 
     /**
      * Simple fluent constructor to avoid weird-looking constructions like
@@ -34,29 +51,48 @@ class Producer
     {
         $this->connection = $connection;
 
-        $this->setFormatter(function ($message) {
+        $this->withFormatter(function ($message) {
             return (string) $message;
         });
     }
 
-    public function withExchange()
+    /**
+     * @param Exchange $exchange
+     * @return Producer $this
+     */
+    public function withExchange(Exchange $exchange)
     {
-
+        $this->exchange = $exchange;
+        $this->isExchange = true;
+        return $this;
     }
 
-    public function withQueue()
+    /**
+     * @param Queue $queue
+     * @return Producer $this
+     */
+    public function withQueue(Queue $queue)
     {
-
+        $this->queue = $queue;
+        $this->isExchange = false;
+        return $this;
     }
 
+    /**
+     * @return bool
+     */
     private function isExchange()
     {
-
+        return $this->isExchange;
     }
 
-    public function setFormatter($formatter)
+    /**
+     * @param $formatter
+     * @return Producer $this
+     */
+    public function withFormatter($formatter)
     {
-        if (is_callable($formatter)) {
+        if (!is_callable($formatter)) {
             throw new ProducerNotProperlyConfigured('Formatter must be a callable.');
         }
         $this->formatter = $formatter;
@@ -78,15 +114,21 @@ class Producer
     /**
      * @param mixed $payload
      * @todo: maybe add properties array as second parameter
+     * @todo: declare queue only once.
      */
     public function produce($payload)
     {
         $message = new AMQPMessage(call_user_func($this->formatter, $payload));
+        $channel = $this->getChannel();
 
         if ($this->isExchange()) {
-            $this->getChannel()->basic_publish($message, $this->name);
+            list ($passive, $durable, $autoDelete, $internal, $nowait, $arguments, $ticket) = $this->exchange->listParams();
+            $channel->exchange_declare($this->exchange->getName(), $this->exchange->getType(), $passive, $durable, $autoDelete, $internal, $nowait, $arguments, $ticket);
+            $channel->basic_publish($message, $this->exchange->getName());
         } else {
-            $this->getChannel()->basic_publish($message, '', $this->name);
+            list ($passive, $durable, $exclusive, $autoDelete, $nowait, $arguments, $ticket) = $this->queue->listParams();
+            $channel->queue_declare($this->queue->getName(), $passive, $durable, $exclusive, $autoDelete, $nowait, $arguments, $ticket);
+            $channel->basic_publish($message, '', $this->queue->getName());
         }
     }
 
