@@ -21,7 +21,7 @@ $producer = Producer::factory($connection)
 $consumer = Consumer::factory($connection)
 ->withQueue(Queue::factory('test_consume_from')->durable(true))
 ->withQos(Qos::factory()->count(10))
-->withListener(AbstractWorker::fromClosure($worker))
+->withWorker(AbstractWorker::fromClosure($worker))
 ->produceResult($producer);
 
 $consumer->run();

@@ -24,6 +24,10 @@
       "AmqpWorkers\\Tests\\": "tests"
     }
   },
+  "scripts": {
+    "test": "phpunit",
+    "format": "phpcbf --standard=psr2 src/"
+  },
   "config": {
     "vendor-dir": "vendor"
   }
