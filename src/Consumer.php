@@ -88,7 +88,7 @@ class Consumer
      * @return Consumer $this
      * @throws \AmqpWorkers\Exception\ConsumerNotProperlyConfigured
      */
-    public function withListener(WorkerInterface $worker)
+    public function withWorker(WorkerInterface $worker)
     {
         $this->worker = $worker;
 
@@ -121,15 +121,8 @@ class Consumer
             throw new ConsumerNotProperlyConfigured('Worker is not defined.');
         }
 
-        $channel = $this->connection->channel();
-
-        if ($this->qos) {
-            list ($size, $count, $global) = $this->qos->values();
-            $channel->basic_qos($size, $count, $global);
-        }
-
         $wrapper = function(AMQPMessage $message) {
-            $result = $this->worker->invoke($message->getBody());
+            $result = $this->worker->__invoke($message->getBody());
             $message->delivery_info['channel']->basic_ack($message->delivery_info['delivery_tag']);
 
             if ($this->producer) {
@@ -137,9 +130,17 @@ class Consumer
             }
         };
 
+        $channel = $this->connection->channel();
+
         // declare queue here
         list ($passive, $durable, $exclusive, $autoDelete, $nowait, $arguments, $ticket) = $this->queue->listParams();
         $channel->queue_declare($this->queue->getName(), $passive, $durable, $exclusive, $autoDelete, $nowait, $arguments, $ticket);
+
+        if ($this->qos) {
+            list ($size, $count, $global) = $this->qos->listParams();
+            $channel->basic_qos($size, $count, $global);
+        }
+
         $channel->basic_consume($this->queue->getName(), '', false, false, false, false, $wrapper, null, []);
 
         while(count($channel->callbacks)) {

@@ -33,6 +33,8 @@ class Qos
     /**
      * Sets `prefetch_size` qos parameter for channel or consumer
      *
+     * CAUTION: Looks like phpamqplib did not implement this feature!
+     *
      * @see https://www.rabbitmq.com/amqp-0-9-1-reference.html#basic.qos.prefetch-size
      * @default 0 disables limit
      * @param int $value prefetch size in bytes
@@ -79,7 +81,7 @@ class Qos
      * @see \PhpAmqpLib\Channel\AMQPChannel::basic_qos()
      * @return array
      */
-    public function values()
+    public function listParams()
     {
         return [$this->prefetchSize, $this->prefetchCount, $this->global];
     }

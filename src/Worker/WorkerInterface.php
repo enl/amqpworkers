@@ -10,5 +10,5 @@ interface WorkerInterface
      * @param $message
      * @return mixed
      */
-    public function invoke($message);
+    public function __invoke($message);
 }
