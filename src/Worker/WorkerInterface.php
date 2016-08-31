@@ -3,7 +3,6 @@
 
 namespace AmqpWorkers\Worker;
 
-
 interface WorkerInterface
 {
     /**

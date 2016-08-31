@@ -3,7 +3,6 @@
 
 namespace AmqpWorkers\Definition;
 
-
 use AmqpWorkers\Exception\ConfigurationException;
 
 class Queue

@@ -3,7 +3,6 @@
 
 namespace AmqpWorkers\Worker;
 
-
 abstract class AbstractWorker implements WorkerInterface
 {
     /**

@@ -3,7 +3,6 @@
 
 namespace AmqpWorkers;
 
-
 use AmqpWorkers\Definition\Qos;
 use AmqpWorkers\Definition\Queue;
 use AmqpWorkers\Exception\ConsumerNotProperlyConfigured;
@@ -121,7 +120,7 @@ class Consumer
             throw new ConsumerNotProperlyConfigured('Worker is not defined.');
         }
 
-        $wrapper = function(AMQPMessage $message) {
+        $wrapper = function (AMQPMessage $message) {
             $result = call_user_func($this->worker, $message->getBody());
 
             if ($result && $this->producer) {
@@ -144,7 +143,7 @@ class Consumer
 
         $channel->basic_consume($this->queue->getName(), '', false, false, false, false, $wrapper, null, []);
 
-        while(count($channel->callbacks)) {
+        while (count($channel->callbacks)) {
             $channel->wait();
         }
 
