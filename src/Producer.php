@@ -33,6 +33,11 @@ class Producer
     private $exchange;
 
     /**
+     * @var AbstractConnection
+     */
+    private $connection;
+
+    /**
      * Simple fluent constructor to avoid weird-looking constructions like
      *
      * ```php
@@ -87,8 +92,9 @@ class Producer
     }
 
     /**
-     * @param $formatter
+     * @param \Closure|callable $formatter
      * @return Producer $this
+     * @throws \AmqpWorkers\Exception\ProducerNotProperlyConfigured
      */
     public function withFormatter($formatter)
     {
@@ -114,7 +120,6 @@ class Producer
     /**
      * @param mixed $payload
      * @todo: maybe add properties array as second parameter
-     * @todo: declare queue only once?
      * @throws \AmqpWorkers\Exception\ProducerNotProperlyConfigured if queue nor exchange not given.
      */
     public function produce($payload)
@@ -131,6 +136,7 @@ class Producer
 
     /**
      * @return AMQPChannel
+     * @todo: declare queue only once?
      * @throws \AmqpWorkers\Exception\ProducerNotProperlyConfigured
      */
     private function getChannel()
