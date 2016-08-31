@@ -134,7 +134,16 @@ class Consumer
 
         // declare queue here
         list ($passive, $durable, $exclusive, $autoDelete, $nowait, $arguments, $ticket) = $this->queue->listParams();
-        $channel->queue_declare($this->queue->getName(), $passive, $durable, $exclusive, $autoDelete, $nowait, $arguments, $ticket);
+        $channel->queue_declare(
+            $this->queue->getName(),
+            $passive,
+            $durable,
+            $exclusive,
+            $autoDelete,
+            $nowait,
+            $arguments,
+            $ticket
+        );
 
         if ($this->qos) {
             list ($size, $count, $global) = $this->qos->listParams();

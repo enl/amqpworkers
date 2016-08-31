@@ -61,7 +61,8 @@ class Qos
     }
 
     /**
-     * Sets `global` qos parameter. This parameter defines if those settings should be used for all channel or only for current Consumer.
+     * Sets `global` qos parameter.
+     * This parameter defines if those settings should be used for all channel or only for current Consumer.
      * By default settings are consumer-wide.
      *
      * @see https://www.rabbitmq.com/amqp-0-9-1-reference.html#basic.qos.global

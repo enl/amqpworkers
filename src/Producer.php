@@ -52,7 +52,7 @@ class Producer
         $this->connection = $connection;
 
         $this->withFormatter(function ($message) {
-            return (string) $message;
+            return (string)$message;
         });
     }
 
@@ -142,11 +142,34 @@ class Producer
         $channel = $this->connection->channel();
 
         if ($this->isExchange()) {
-            list ($passive, $durable, $autoDelete, $internal, $nowait, $arguments, $ticket) = $this->exchange->listParams();
-            $channel->exchange_declare($this->exchange->getName(), $this->exchange->getType(), $passive, $durable, $autoDelete, $internal, $nowait, $arguments, $ticket);
+            list ($passive, $durable, $autoDelete, $internal, $nowait, $arguments, $ticket) =
+                $this->exchange->listParams();
+
+            $channel->exchange_declare(
+                $this->exchange->getName(),
+                $this->exchange->getType(),
+                $passive,
+                $durable,
+                $autoDelete,
+                $internal,
+                $nowait,
+                $arguments,
+                $ticket
+            );
         } else {
-            list ($passive, $durable, $exclusive, $autoDelete, $nowait, $arguments, $ticket) = $this->queue->listParams();
-            $channel->queue_declare($this->queue->getName(), $passive, $durable, $exclusive, $autoDelete, $nowait, $arguments, $ticket);
+            list ($passive, $durable, $exclusive, $autoDelete, $nowait, $arguments, $ticket) =
+                $this->queue->listParams();
+
+            $channel->queue_declare(
+                $this->queue->getName(),
+                $passive,
+                $durable,
+                $exclusive,
+                $autoDelete,
+                $nowait,
+                $arguments,
+                $ticket
+            );
         }
 
         return $channel;
