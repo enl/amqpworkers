@@ -1,6 +1,6 @@
 # AMQP Workers library
 
-All this library does is providing more fluent experience with AMQP. Original phpamqplib has very strong approach to its functions declarations.
+All this library does is providing more fluent experience with AMQP. Original phpamqplib has very strange approach to its functions declarations.
 
 I decided to create a tiny layer of abstraction which provides a bit more flexible interface:
 
@@ -40,6 +40,7 @@ $consumer = Consumer::factory($connection)
     // declare and start consuming the queue
     ->run();
 ```
+
 ## Change log ##
 
 Please see [CHANGELOG](CHANGELOG.md) for more information what has changed recently.
@@ -60,23 +61,24 @@ If you discover any security related issues, please email [deadyaga@gmail.com](m
 
 ## Credits
 
-- [:author_name][link-author]
+- [Alex Panshin][link-author]
 - [All Contributors][link-contributors]
 
 ## License
 
 The MIT License (MIT). Please see [License File](LICENSE.md) for more information.
 
-[ico-version]: https://img.shields.io/packagist/v/:vendor/:package_name.svg?style=flat-square
+[ico-version]: https://img.shields.io/packagist/v/enl/amqp-workers.svg?style=flat-square
 [ico-license]: https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square
-[ico-travis]: https://img.shields.io/travis/:vendor/:package_name/master.svg?style=flat-square
-[ico-scrutinizer]: https://img.shields.io/scrutinizer/coverage/g/:vendor/:package_name.svg?style=flat-square
-[ico-code-quality]: https://img.shields.io/scrutinizer/g/:vendor/:package_name.svg?style=flat-square
-[ico-downloads]: https://img.shields.io/packagist/dt/:vendor/:package_name.svg?style=flat-square
+[ico-travis]: https://img.shields.io/travis/enl/amqp-workers/master.svg?style=flat-square
+[ico-scrutinizer]: https://img.shields.io/scrutinizer/coverage/g/enl/amqp-workers.svg?style=flat-square
+[ico-code-quality]: https://img.shields.io/scrutinizer/g/enl/amqp-workers.svg?style=flat-square
+[ico-downloads]: https://img.shields.io/packagist/dt/enl/amqp-workers.svg?style=flat-square
 
-[link-packagist]: https://packagist.org/packages/:vendor/:package_name
-[link-travis]: https://travis-ci.org/:vendor/:package_name
-[link-scrutinizer]: https://scrutinizer-ci.com/g/:vendor/:package_name/code-structure
-[link-code-quality]: https://scrutinizer-ci.com/g/:vendor/:package_name
-[link-downloads]: https://packagist.org/packages/:vendor/:package_name
-[link-author]: https://github.com/:author_username
+[link-packagist]: https://packagist.org/packages/enl/amqp-workers
+[link-travis]: https://travis-ci.org/enl/amqp-workers
+[link-scrutinizer]: https://scrutinizer-ci.com/g/enl/amqp-workers/code-structure
+[link-code-quality]: https://scrutinizer-ci.com/g/enl/amqp-workers
+[link-downloads]: https://packagist.org/packages/enl/amqp-workers
+[link-author]: https://github.com/enl
+[link-contributors]: https://github.com/enl/amqpworkers/graphs/contributors
