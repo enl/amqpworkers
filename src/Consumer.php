@@ -115,19 +115,20 @@ class Consumer
     public function run()
     {
         if ($this->queue === null) {
-            throw new ConsumerNotProperlyConfigured('Queue is not given.');
+            throw new ConsumerNotProperlyConfigured('Queue is not defined.');
         }
         if ($this->worker === null) {
             throw new ConsumerNotProperlyConfigured('Worker is not defined.');
         }
 
         $wrapper = function(AMQPMessage $message) {
-            $result = $this->worker->__invoke($message->getBody());
-            $message->delivery_info['channel']->basic_ack($message->delivery_info['delivery_tag']);
+            $result = call_user_func($this->worker, $message->getBody());
 
-            if ($this->producer) {
+            if ($result && $this->producer) {
                 $this->producer->produce($result);
             }
+
+            $message->delivery_info['channel']->basic_ack($message->delivery_info['delivery_tag']);
         };
 
         $channel = $this->connection->channel();

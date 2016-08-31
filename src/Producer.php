@@ -114,7 +114,8 @@ class Producer
     /**
      * @param mixed $payload
      * @todo: maybe add properties array as second parameter
-     * @todo: declare queue only once.
+     * @todo: declare queue only once?
+     * @throws \AmqpWorkers\Exception\ProducerNotProperlyConfigured if queue nor exchange not given.
      */
     public function produce($payload)
     {
@@ -122,27 +123,30 @@ class Producer
         $channel = $this->getChannel();
 
         if ($this->isExchange()) {
-            list ($passive, $durable, $autoDelete, $internal, $nowait, $arguments, $ticket) = $this->exchange->listParams();
-            $channel->exchange_declare($this->exchange->getName(), $this->exchange->getType(), $passive, $durable, $autoDelete, $internal, $nowait, $arguments, $ticket);
             $channel->basic_publish($message, $this->exchange->getName());
         } else {
-            list ($passive, $durable, $exclusive, $autoDelete, $nowait, $arguments, $ticket) = $this->queue->listParams();
-            $channel->queue_declare($this->queue->getName(), $passive, $durable, $exclusive, $autoDelete, $nowait, $arguments, $ticket);
             $channel->basic_publish($message, '', $this->queue->getName());
         }
     }
 
     /**
      * @return AMQPChannel
+     * @throws \AmqpWorkers\Exception\ProducerNotProperlyConfigured
      */
     private function getChannel()
     {
+        if ($this->exchange === null && $this->queue === null) {
+            throw new ProducerNotProperlyConfigured('Nor queue nor exchange given.');
+        }
+
         $channel = $this->connection->channel();
 
         if ($this->isExchange()) {
-            // declare exchange here
+            list ($passive, $durable, $autoDelete, $internal, $nowait, $arguments, $ticket) = $this->exchange->listParams();
+            $channel->exchange_declare($this->exchange->getName(), $this->exchange->getType(), $passive, $durable, $autoDelete, $internal, $nowait, $arguments, $ticket);
         } else {
-            // declare queue here
+            list ($passive, $durable, $exclusive, $autoDelete, $nowait, $arguments, $ticket) = $this->queue->listParams();
+            $channel->queue_declare($this->queue->getName(), $passive, $durable, $exclusive, $autoDelete, $nowait, $arguments, $ticket);
         }
 
         return $channel;
