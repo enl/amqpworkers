@@ -2,9 +2,8 @@
 
 [![Latest Version on Packagist][ico-version]][link-packagist]
 [![Software License][ico-license]](LICENSE.md)
-[![Build Status][ico-travis]][link-travis]
-[![Coverage Status][ico-scrutinizer]][link-scrutinizer]
-[![Quality Score][ico-code-quality]][link-code-quality]
+[![Build Status](https://travis-ci.org/enl/amqpworkers.svg?branch=master)](https://travis-ci.org/enl/amqpworkers)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/enl/amqpworkers/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/enl/amqpworkers/?branch=master)
 [![Total Downloads][ico-downloads]][link-downloads]
 
 All this library does is providing more fluent experience with AMQP. Original phpamqplib has very strange approach to its functions declarations.
@@ -77,15 +76,9 @@ The MIT License (MIT). Please see [License File](LICENSE.md) for more informatio
 
 [ico-version]: https://img.shields.io/packagist/v/enl/amqp-workers.svg?style=flat-square
 [ico-license]: https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square
-[ico-travis]: https://img.shields.io/travis/enl/amqp-workers/master.svg?style=flat-square
-[ico-scrutinizer]: https://img.shields.io/scrutinizer/coverage/g/enl/amqp-workers.svg?style=flat-square
-[ico-code-quality]: https://img.shields.io/scrutinizer/g/enl/amqp-workers.svg?style=flat-square
 [ico-downloads]: https://img.shields.io/packagist/dt/enl/amqp-workers.svg?style=flat-square
 
 [link-packagist]: https://packagist.org/packages/enl/amqp-workers
-[link-travis]: https://travis-ci.org/enl/amqp-workers
-[link-scrutinizer]: https://scrutinizer-ci.com/g/enl/amqpworkers/badges/coverage.png?b=master
-[link-code-quality]: https://scrutinizer-ci.com/g/enl/amqpworkers/badges/quality-score.png?b=master
 [link-downloads]: https://packagist.org/packages/enl/amqp-workers
 [link-author]: https://github.com/enl
 [link-contributors]: https://github.com/enl/amqpworkers/graphs/contributors
