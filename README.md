@@ -18,7 +18,7 @@ $consumer = Consumer::factory($connection)
     ->run();
 ```
 
-That is very short basic setup, `Consumer` has much more functions. Read [the manual](doc/index.md) for more detailed description.
+That is very short basic setup, `Consumer` has much more functions. Read [the manual](doc/getting-started.md) for more detailed description.
 
 ### Features ###
 
