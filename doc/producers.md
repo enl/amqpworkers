@@ -30,7 +30,7 @@ $exchange = new Definition\Exchange('test-exchange', 'fanout');
 $queue = new Definition\Queue('test-queue');
 ```
 
-Both classes support fluent interface for parameter setters and `factory` named constructor to avoid braces for `(new Queue('test'))->durable(true)`
+Both classes support fluent interface for parameter setters and `factory` named constructor to avoid braces for `(new Queue('test'))->durable(true)`.
 
 ## Format messages before sending them ##
 
@@ -55,4 +55,4 @@ Please note, that formatters are not stacked, they are replaced by call of `with
 
 ## Batch messaging ##
 
-`Producer::produceAll($messages)` accepts `array|\Traversable` and for each `$message` calls `Producer::produce()`. Yeah, that is kinad stupid implementation, but we need something to start with. There is an [issue](https://github.com/enl/amqp-workers/issues/1) for this.
+`Producer::produceAll($messages)` accepts `array|\Traversable` and for each `$message` calls `Producer::produce()`. Yeah, that is kinda stupid implementation, but we need something to start with. There is an [issue](https://github.com/enl/amqp-workers/issues/1) for this.

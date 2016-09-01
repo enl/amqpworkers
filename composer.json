@@ -39,10 +39,5 @@
   },
   "config": {
     "vendor-dir": "vendor"
-  },
-  "extra": {
-    "branch-alias": {
-      "dev-master": "master"
-    }
   }
 }

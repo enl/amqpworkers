@@ -22,7 +22,7 @@ That is very short basic setup, `Consumer` has much more functions. Read [the ma
 
 ### Features ###
 
-* More fluent and flexible interface than original [phpamqplib] library;
+* More fluent and flexible interface than original [php-amqplib](https://github.com/php-amqplib/php-amqplib) library;
 * Very lazy approach, amqp-related stuff is called only when you call `run` or `produce` functions.
 
 ## Install ##
