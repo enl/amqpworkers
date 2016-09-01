@@ -84,8 +84,8 @@ The MIT License (MIT). Please see [License File](LICENSE.md) for more informatio
 
 [link-packagist]: https://packagist.org/packages/enl/amqp-workers
 [link-travis]: https://travis-ci.org/enl/amqp-workers
-[link-scrutinizer]: https://scrutinizer-ci.com/g/enl/amqp-workers/code-structure
-[link-code-quality]: https://scrutinizer-ci.com/g/enl/amqp-workers
+[link-scrutinizer]: https://scrutinizer-ci.com/g/enl/amqpworkers/badges/coverage.png?b=master
+[link-code-quality]: https://scrutinizer-ci.com/g/enl/amqpworkers/badges/quality-score.png?b=master
 [link-downloads]: https://packagist.org/packages/enl/amqp-workers
 [link-author]: https://github.com/enl
 [link-contributors]: https://github.com/enl/amqpworkers/graphs/contributors
