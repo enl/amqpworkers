@@ -10,6 +10,13 @@ use AmqpWorkers\Worker\WorkerInterface;
 use PhpAmqpLib\Connection\AbstractConnection;
 use PhpAmqpLib\Message\AMQPMessage;
 
+/**
+ * Consumer is an object which connects to an AMQP queue, retrieves messages and sends them to a Worker.
+ *
+ * @package AmqpWorkers
+ * @author Alex Panshin <deadyaga@gmail.com>
+ * @since 1.0
+ */
 class Consumer
 {
     /**

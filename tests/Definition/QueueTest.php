@@ -5,7 +5,7 @@ namespace AmqpWorkers\Tests\Definition;
 
 
 use AmqpWorkers\Definition\Queue;
-use AmqpWorkers\Exception\ConfigurationException;
+use AmqpWorkers\Exception\DefinitionException;
 
 class QueueTest extends \PHPUnit_Framework_TestCase
 {
@@ -14,7 +14,7 @@ class QueueTest extends \PHPUnit_Framework_TestCase
      */
     public function shouldRaiseExceptionIfNameIsNull()
     {
-        $this->expectException(ConfigurationException::class);
+        $this->expectException(DefinitionException::class);
         $this->expectExceptionMessage('Queue name cannot be empty.');
 
         Queue::factory('');

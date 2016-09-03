@@ -3,33 +3,46 @@
 
 namespace AmqpWorkers\Definition;
 
-use AmqpWorkers\Exception\ConfigurationException;
+use AmqpWorkers\Exception\DefinitionException;
 
+/**
+ * Queue definition.
+ * Use it with `AmqpWorkers\Producer::withQueue` or `AmqpWorkers\Consumer::withQueue`.
+ *
+ * @package AmqpWorkers\Definition
+ * @author Alex Panshin <deadyaga@gmail.com>
+ * @since 1.0
+ */
 class Queue
 {
+    /** @var string  */
     private $name;
 
+    /** @var bool  */
     private $passive = false;
 
+    /** @var bool  */
     private $durable = false;
 
+    /** @var bool  */
     private $exclusive = false;
 
+    /** @var bool  */
     private $autoDelete = false;
 
+    /** @var bool  */
     private $nowait = false;
 
-    /**
-     * @var null|array
-     */
+    /** @var array|null */
     private $arguments = null;
 
+    /** @var int|null  */
     private $ticket = null;
 
     /**
      * @param string $name
      * @return static
-     * @throws \AmqpWorkers\Exception\ConfigurationException
+     * @throws \AmqpWorkers\Exception\DefinitionException
      */
     public static function factory($name)
     {
@@ -39,12 +52,12 @@ class Queue
     /**
      * Queue constructor.
      * @param string $name
-     * @throws \AmqpWorkers\Exception\ConfigurationException if empty name is given
+     * @throws \AmqpWorkers\Exception\DefinitionException if empty name is given
      */
     public function __construct($name)
     {
         if ($name === null || $name === '') {
-            throw new ConfigurationException('Queue name cannot be empty.');
+            throw new DefinitionException('Queue name cannot be empty.');
         }
         $this->name = (string) $name;
     }
@@ -143,6 +156,9 @@ class Queue
 
     /**
      * Returns the list of parameters for queue_declare
+     *
+     * @see \Phpamqplib\Channel\AMQPChannel::queue_declare()
+     * @return array
      */
     public function listParams()
     {

@@ -5,7 +5,7 @@ namespace AmqpWorkers\Tests\Definition;
 
 
 use AmqpWorkers\Definition\Exchange;
-use AmqpWorkers\Exception\ConfigurationException;
+use AmqpWorkers\Exception\DefinitionException;
 
 class ExchangeTest extends \PHPUnit_Framework_TestCase
 {
@@ -26,7 +26,7 @@ class ExchangeTest extends \PHPUnit_Framework_TestCase
      */
     public function shouldRaiseException($name, $type, $message)
     {
-        $this->expectException(ConfigurationException::class);
+        $this->expectException(DefinitionException::class);
         $this->expectExceptionMessage($message);
 
         Exchange::factory($name, $type);

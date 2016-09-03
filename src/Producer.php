@@ -10,6 +10,16 @@ use PhpAmqpLib\Channel\AMQPChannel;
 use PhpAmqpLib\Connection\AbstractConnection;
 use PhpAmqpLib\Message\AMQPMessage;
 
+/**
+ * Producer is an object that sends something into AMQP exchange.
+ * It can format given messages somehow,
+ * has very stupid (for now) batch messages processing
+ * and can work with both queues and exchanges as a target.
+ *
+ * @package AmqpWorkers
+ * @author Alex Panshin <deadyaga@gmail.com>
+ * @since 1.0
+ */
 class Producer
 {
     /**
@@ -52,6 +62,10 @@ class Producer
         return new static($connection);
     }
 
+    /**
+     * Producer constructor.
+     * @param AbstractConnection $connection
+     */
     public function __construct(AbstractConnection $connection)
     {
         $this->connection = $connection;

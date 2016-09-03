@@ -3,32 +3,54 @@
 
 namespace AmqpWorkers\Definition;
 
-use AmqpWorkers\Exception\ConfigurationException;
+use AmqpWorkers\Exception\DefinitionException;
 
+/**
+ * Exchange definition. Use it with `Producer::withExchange()`
+ * if you need to send something to RabbitMQ into explicitly defined exchange.
+ *
+ * @see https://www.rabbitmq.com/tutorials/amqp-concepts.html
+ *
+ * @package AmqpWorkers\Definition
+ * @author Alex Panshin <deadyaga@gmail.com>
+ * @since 1.0
+ */
 class Exchange
 {
+    /** @var string  */
     private $name;
 
+    /** @var string  */
     private $type;
 
+    /** @var bool  */
     private $passive = false;
 
+    /** @var bool  */
     private $durable = false;
 
+    /** @var bool  */
     private $internal = false;
 
+    /** @var bool  */
     private $autoDelete = false;
 
+    /** @var bool  */
     private $nowait = false;
 
-    /**
-     * @var null|array
-     */
+    /** @var array|null  */
     private $arguments = null;
 
+    /** @var int|null */
     private $ticket = null;
 
 
+    /**
+     * Named constructor to get more fluent interface
+     * @param $name
+     * @param $type
+     * @return static
+     */
     public static function factory($name, $type)
     {
         return new static($name, $type);
@@ -36,17 +58,19 @@ class Exchange
 
     /**
      * Exchange constructor.
-     * @param string $name
-     * @param string $type
-     * @throws \AmqpWorkers\Exception\ConfigurationException
+     * @param string $name Exchange name
+     * @param string $type Exchange type.
+     *
+     * @see https://www.rabbitmq.com/tutorials/amqp-concepts.html#exchanges
+     * @throws \AmqpWorkers\Exception\DefinitionException
      */
     public function __construct($name, $type)
     {
         if (empty($name)) {
-            throw new ConfigurationException('Exchange name cannot be empty.');
+            throw new DefinitionException('Exchange name cannot be empty.');
         }
         if (empty($type)) {
-            throw new ConfigurationException('Exchange type cannot be empty.');
+            throw new DefinitionException('Exchange type cannot be empty.');
         }
 
         $this->name = $name;
@@ -153,7 +177,10 @@ class Exchange
     }
 
     /**
-     * Returns the list of parameters for queue_declare
+     * Returns the list of parameters for exchange_declare
+     *
+     * @see \PhpAmqpLib\Channel\AMQPChannel::exchange_declare()
+     * @return array
      */
     public function listParams()
     {

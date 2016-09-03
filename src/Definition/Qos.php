@@ -4,16 +4,31 @@
 namespace AmqpWorkers\Definition;
 
 /**
- * Class Qos
+ * QoS definition. Defines how many unacknowledged message Consumer can get from RabbitMQ.
+ * Use it with `Consumer::withQos()`.
+ *
+ * @see https://www.rabbitmq.com/consumer-prefetch.html
+ *
  * @package AmqpWorkers\Definition
  * @author Alex Panshin <deadyaga@gmail.com>
+ * @since 1.0
  */
 class Qos
 {
+    /**
+     * CAUTION: Looks like phpamqplib did not implement this feature!
+     * @var int prefetch size in bytes
+     */
     private $prefetchSize = 0;
 
+    /**
+     * @var int prefetch count in items
+     */
     private $prefetchCount = 0;
 
+    /**
+     * @var bool if for true this setting is channel-wide
+     */
     private $global = false;
 
     /**
