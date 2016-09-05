@@ -55,4 +55,17 @@ Please note, that formatters are not stacked, they are replaced by call of `with
 
 ## Batch messaging ##
 
-`Producer::produceAll($messages)` accepts `array|\Traversable` and for each `$message` calls `Producer::produce()`. Yeah, that is kinda stupid implementation, but we need something to start with. There is an [issue](https://github.com/enl/amqp-workers/issues/1) for this.
+Here it is `BatchProducer` class, which `produce` function accepts everything \Traversable and arrays. The implementation of this function uses [php-amqplib's batch publishing functions](https://github.com/php-amqplib/php-amqplib#batch-publishing).
+
+```php
+BatchProducer::factory($connection)
+    ->produce(['test', 'test', 'test']);
+```
+
+As `BatchProducer` has exactly the same interface as `Producer`, you can use it `Consumer::withProducer()`.
+
+```php
+Consumer::factory($connection)
+    ->withProducer(BatchProducer::factory($connection));
+```
+
