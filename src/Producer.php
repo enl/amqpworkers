@@ -35,12 +35,12 @@ class Producer
     /**
      * @var Queue
      */
-    private $queue;
+    protected $queue;
 
     /**
      * @var Exchange
      */
-    private $exchange;
+    protected $exchange;
 
     /**
      * @var AbstractConnection
@@ -100,7 +100,7 @@ class Producer
     /**
      * @return bool
      */
-    private function isExchange()
+    protected function isExchange()
     {
         return $this->isExchange;
     }
@@ -121,30 +121,23 @@ class Producer
     }
 
     /**
-     * @param array|\Traversable $messages
-     * @todo: maybe add properties array as second parameter
-     */
-    public function produceAll($messages)
-    {
-        foreach ($messages as $message) {
-            $this->produce($message);
-        }
-    }
-
-    /**
      * @param mixed $payload
      * @todo: maybe add properties array as second parameter
      * @throws \AmqpWorkers\Exception\ProducerNotProperlyConfigured if queue nor exchange not given.
      */
     public function produce($payload)
     {
-        $message = new AMQPMessage(call_user_func($this->formatter, $payload));
-        $channel = $this->getChannel();
-
         if ($this->isExchange()) {
-            $channel->basic_publish($message, $this->exchange->getName());
+            $this->getChannel()->basic_publish(
+                $this->createMessage($payload),
+                $this->exchange->getName()
+            );
         } else {
-            $channel->basic_publish($message, '', $this->queue->getName());
+            $this->getChannel()->basic_publish(
+                $this->createMessage($payload),
+                '',
+                $this->queue->getName()
+            );
         }
     }
 
@@ -153,7 +146,7 @@ class Producer
      * @todo: declare queue only once?
      * @throws \AmqpWorkers\Exception\ProducerNotProperlyConfigured
      */
-    private function getChannel()
+    protected function getChannel()
     {
         if ($this->exchange === null && $this->queue === null) {
             throw new ProducerNotProperlyConfigured('Nor queue nor exchange given.');
@@ -193,5 +186,14 @@ class Producer
         }
 
         return $channel;
+    }
+
+    /**
+     * @param mixed $payload
+     * @return AMQPMessage
+     */
+    protected function createMessage($payload)
+    {
+        return new AMQPMessage(call_user_func($this->formatter, $payload));
     }
 }

@@ -97,15 +97,5 @@ class ProducerTest extends m\Adapter\Phpunit\MockeryTestCase
             ->produce('message');
     }
 
-    public function testProduceAll()
-    {
-        $this->channel->shouldReceive('queue_declare');
-        $this->channel->shouldReceive('basic_publish')->once()->withArgs([m::anyOf(new AMQPMessage('test')), '', 'test']);
-        $this->channel->shouldReceive('basic_publish')->once()->withArgs([m::anyOf(new AMQPMessage('test1')), '', 'test']);
-        $this->channel->shouldReceive('basic_publish')->once()->withArgs([m::anyOf(new AMQPMessage('test2')), '', 'test']);
 
-        $producer = Producer::factory($this->connection)
-            ->withQueue(new Queue('test'))
-            ->produceAll(['test', 'test1', 'test2']);
-    }
 }
