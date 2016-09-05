@@ -1,8 +1,6 @@
 <?php
 
-
 namespace AmqpWorkers;
-
 
 class BatchProducer extends Producer
 {
@@ -24,5 +22,4 @@ class BatchProducer extends Producer
 
         $channel->publish_batch();
     }
-
 }
