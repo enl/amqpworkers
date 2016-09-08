@@ -2,6 +2,13 @@
 
 namespace AmqpWorkers;
 
+/**
+ * BatchProducer treats given message as a list of messages and send them to RabbitMQ channel
+ *
+ * @package AmqpWorkers
+ * @author Alex Panshin <deadyaga@gmail.com>
+ * @since 1.0
+ */
 class BatchProducer extends Producer
 {
     /**

@@ -12,9 +12,7 @@ use PhpAmqpLib\Message\AMQPMessage;
 
 /**
  * Producer is an object that sends something into AMQP exchange.
- * It can format given messages somehow,
- * has very stupid (for now) batch messages processing
- * and can work with both queues and exchanges as a target.
+ * It can format given messages somehow and can work with both queues and exchanges as a target.
  *
  * @package AmqpWorkers
  * @author Alex Panshin <deadyaga@gmail.com>
@@ -55,7 +53,7 @@ class Producer
      * ```
      *
      * @param AbstractConnection $connection
-     * @return Producer
+     * @return Producer $this
      */
     public static function factory(AbstractConnection $connection)
     {
@@ -98,17 +96,9 @@ class Producer
     }
 
     /**
-     * @return bool
-     */
-    protected function isExchange()
-    {
-        return $this->isExchange;
-    }
-
-    /**
      * @param \Closure|callable $formatter
      * @return Producer $this
-     * @throws \AmqpWorkers\Exception\ProducerNotProperlyConfigured
+     * @throws ProducerNotProperlyConfigured
      */
     public function withFormatter($formatter)
     {
@@ -123,7 +113,7 @@ class Producer
     /**
      * @param mixed $payload
      * @todo: maybe add properties array as second parameter
-     * @throws \AmqpWorkers\Exception\ProducerNotProperlyConfigured if queue nor exchange not given.
+     * @throws ProducerNotProperlyConfigured if queue nor exchange not given.
      */
     public function produce($payload)
     {
@@ -142,15 +132,28 @@ class Producer
     }
 
     /**
-     * @return AMQPChannel
-     * @todo: declare queue only once?
-     * @throws \AmqpWorkers\Exception\ProducerNotProperlyConfigured
+     * Returns `true` if producer is properly configured. Throws exception otherwise.
+     * Function is public just because Consumer needs to check if given producer configured before consuming the queue.
+     *
+     * @return bool
+     * @throws ProducerNotProperlyConfigured
      */
-    protected function getChannel()
+    public function selfCheck()
     {
         if ($this->exchange === null && $this->queue === null) {
             throw new ProducerNotProperlyConfigured('Nor queue nor exchange given.');
         }
+
+        return true;
+    }
+
+    /**
+     * @return AMQPChannel
+     * @throws ProducerNotProperlyConfigured
+     */
+    protected function getChannel()
+    {
+        $this->selfCheck();
 
         $channel = $this->connection->channel();
 
@@ -195,5 +198,13 @@ class Producer
     protected function createMessage($payload)
     {
         return new AMQPMessage(call_user_func($this->formatter, $payload));
+    }
+
+    /**
+     * @return bool
+     */
+    protected function isExchange()
+    {
+        return $this->isExchange;
     }
 }

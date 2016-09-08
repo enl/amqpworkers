@@ -6,6 +6,7 @@ namespace AmqpWorkers;
 use AmqpWorkers\Definition\Qos;
 use AmqpWorkers\Definition\Queue;
 use AmqpWorkers\Exception\ConsumerNotProperlyConfigured;
+use AmqpWorkers\Exception\ProducerNotProperlyConfigured;
 use AmqpWorkers\Worker\WorkerInterface;
 use PhpAmqpLib\Connection\AbstractConnection;
 use PhpAmqpLib\Message\AMQPMessage;
@@ -117,6 +118,7 @@ class Consumer
      * Starts consumer. By default, this function can be terminated only by Worker's exception
      *
      * @throws ConsumerNotProperlyConfigured
+     * @throws ProducerNotProperlyConfigured if given producer is not properly configured
      */
     public function run()
     {
@@ -126,6 +128,8 @@ class Consumer
         if ($this->worker === null) {
             throw new ConsumerNotProperlyConfigured('Worker is not defined.');
         }
+
+        $this->producer && $this->producer->selfCheck();
 
         $wrapper = function (AMQPMessage $message) {
             $result = call_user_func($this->worker, $message->getBody());
