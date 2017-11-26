@@ -18,7 +18,7 @@ use PhpAmqpLib\Message\AMQPMessage;
  * @author Alex Panshin <deadyaga@gmail.com>
  * @since 1.0
  */
-class Producer
+class Producer implements ProducerInterface
 {
     /**
      * @var callable
