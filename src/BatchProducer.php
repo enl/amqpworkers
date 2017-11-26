@@ -21,6 +21,8 @@ class BatchProducer extends Producer
         /** @var BatchProducer $producer */
         $producer = parent::factory($connection);
         $producer->limit = $limit;
+
+        return $producer;
     }
 
     /**
@@ -41,12 +43,14 @@ class BatchProducer extends Producer
 
             $this->queued++;
 
-            if ($this->limit && $this->limit > $this->queued) {
+            if ($this->limit && $this->limit <= $this->queued) {
                 $this->flush();
             }
         }
 
-        $this->flush();
+        if ($this->queued) {
+            $this->flush();
+        }
     }
 
     protected function flush()
