@@ -105,10 +105,10 @@ class Consumer
     /**
      * If producer is set, Consumer will call `Producer::produce` with whatever Worker will return
      *
-     * @param Producer $producer
+     * @param ProducerInterface $producer
      * @return Consumer $this
      */
-    public function produceResult(Producer $producer)
+    public function produceResult(ProducerInterface $producer)
     {
         $this->producer = $producer;
         return $this;
