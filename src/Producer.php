@@ -44,6 +44,10 @@ class Producer implements ProducerInterface
      * @var AbstractConnection
      */
     private $connection;
+    /**
+     * @var AMQPChannel
+     */
+    private $channel;
 
     /**
      * Simple fluent constructor to avoid weird-looking constructions like
@@ -81,6 +85,7 @@ class Producer implements ProducerInterface
     {
         $this->exchange = $exchange;
         $this->isExchange = true;
+        $this->channel = null;
         return $this;
     }
 
@@ -92,6 +97,7 @@ class Producer implements ProducerInterface
     {
         $this->queue = $queue;
         $this->isExchange = false;
+        $this->channel = null;
         return $this;
     }
 
@@ -155,40 +161,42 @@ class Producer implements ProducerInterface
     {
         $this->selfCheck();
 
-        $channel = $this->connection->channel();
+        if (!$this->channel) {
+            $this->channel = $this->connection->channel();
 
-        if ($this->isExchange()) {
-            list ($passive, $durable, $autoDelete, $internal, $nowait, $arguments, $ticket) =
-                $this->exchange->listParams();
+            if ($this->isExchange()) {
+                list ($passive, $durable, $autoDelete, $internal, $nowait, $arguments, $ticket) =
+                    $this->exchange->listParams();
 
-            $channel->exchange_declare(
-                $this->exchange->getName(),
-                $this->exchange->getType(),
-                $passive,
-                $durable,
-                $autoDelete,
-                $internal,
-                $nowait,
-                $arguments,
-                $ticket
-            );
-        } else {
-            list ($passive, $durable, $exclusive, $autoDelete, $nowait, $arguments, $ticket) =
-                $this->queue->listParams();
+                $this->channel->exchange_declare(
+                    $this->exchange->getName(),
+                    $this->exchange->getType(),
+                    $passive,
+                    $durable,
+                    $autoDelete,
+                    $internal,
+                    $nowait,
+                    $arguments,
+                    $ticket
+                );
+            } else {
+                list ($passive, $durable, $exclusive, $autoDelete, $nowait, $arguments, $ticket) =
+                    $this->queue->listParams();
 
-            $channel->queue_declare(
-                $this->queue->getName(),
-                $passive,
-                $durable,
-                $exclusive,
-                $autoDelete,
-                $nowait,
-                $arguments,
-                $ticket
-            );
+                $this->channel->queue_declare(
+                    $this->queue->getName(),
+                    $passive,
+                    $durable,
+                    $exclusive,
+                    $autoDelete,
+                    $nowait,
+                    $arguments,
+                    $ticket
+                );
+            }
         }
 
-        return $channel;
+        return $this->channel;
     }
 
     /**
