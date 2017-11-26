@@ -29,6 +29,8 @@ class BatchProducer extends Producer
      */
     public function produce($messages)
     {
+        $this->selfCheck();
+
         $channel = $this->getChannel();
         foreach ($messages as $payload) {
             if ($this->isExchange()) {
