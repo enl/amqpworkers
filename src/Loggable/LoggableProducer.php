@@ -37,7 +37,7 @@ class LoggableProducer implements ProducerInterface
      */
     public function produce($payload)
     {
-        $this->logger->debug('Got "%s" message, producing...', serialize($payload));
+        $this->logger->debug(sprintf('Got "%s" message, producing...', serialize($payload)));
         $this->producer->produce($payload);
         $this->logger->debug(sprintf('Produced "%s" message', serialize($payload)));
     }
