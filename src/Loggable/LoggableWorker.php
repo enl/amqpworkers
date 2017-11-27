@@ -37,7 +37,7 @@ class LoggableWorker implements WorkerInterface
     {
         $this->logger->debug('Got "%s" message');
         $result = call_user_func($this->worker, $message);
-        $this->logger->debug('Successfully handled "%s" message', $message);
+        $this->logger->debug(sprintf('Successfully handled "%s" message', $message));
 
         return $result;
     }
